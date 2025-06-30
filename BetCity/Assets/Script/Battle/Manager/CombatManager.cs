@@ -7,11 +7,11 @@ public class CombatManager : MonoBehaviour
     public static CombatManager Instance; // 单例模式方便访问
 
     public Tilemap combatGrid; // 引用Tilemap
-    public List<CardData> publicDeck; // 公共牌库
-    public List<CardData> DiscardPile; // A方弃牌堆
+    public List<Card> publicDeck; // 公共牌库
+    public List<Card> DiscardPile; // A方弃牌堆
 
-    private List<CardData> playerAHand; // A方手牌
-    private List<CardData> playerBHand; // B方手牌
+    private List<Card> playerAHand; // A方手牌
+    private List<Card> playerBHand; // B方手牌
 
     private CardOwner currentPlayer; // 当前回合玩家
 
