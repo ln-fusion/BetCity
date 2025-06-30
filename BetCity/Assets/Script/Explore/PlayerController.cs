@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 0.5f;
     [SerializeField] private float playerHeight = 0.5f;
 
+    [Header("理智消耗设置")]
+    [SerializeField] private int dailySanityCost = 5; // 每天消耗的理智值
+
     // ========== 私有变量 ==========
     private Node currentNode;
     private int actionPoints;
@@ -29,6 +32,21 @@ public class PlayerController : MonoBehaviour
         {
             Debug.LogError("未指定起始节点！");
         }
+
+        // 确保 SanityManager 已经初始化
+        SanityManager.Instance.ToString(); // 访问一次 Instance 属性以触发其 Awake/单例创建
+
+        // 监听理智归零事件，以便在游戏结束时停止玩家操作
+        SanityManager.Instance.onSanityZero.AddListener(HandleSanityZero);
+    }
+
+    private void OnDestroy()
+    {
+        // 移除事件监听，防止内存泄漏
+        if (SanityManager.Instance != null)
+        {
+            SanityManager.Instance.onSanityZero.RemoveListener(HandleSanityZero);
+        }
     }
 
     // ========== 公共方法 ==========
@@ -40,12 +58,35 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        // 检查理智值是否足够进行投骰子操作
+        if (SanityManager.Instance.CurrentSanity <= 0)
+        {
+            Debug.LogWarning("理智值不足，无法投掷骰子。");
+            return;
+        }
+
+        // 每日消耗理智
+        SanityManager.Instance.DecreaseSanity(dailySanityCost);
+
+        // 如果理智归零，则不再投骰子
+        if (SanityManager.Instance.CurrentSanity <= 0)
+        {
+            Debug.Log("理智值已归零，无法投掷骰子。");
+            return;
+        }
+
         actionPoints = diceManager.RollDice();
         Debug.Log($"获得行动点数: {actionPoints}");
     }
 
     public void TryMoveToNode(Node targetNode)
     {
+        if (SanityManager.Instance.CurrentSanity <= 0)
+        {
+            Debug.LogWarning("理智值不足，无法移动。");
+            return;
+        }
+
         if (CanMoveTo(targetNode))
         {
             StartCoroutine(MoveToNode(targetNode));
@@ -101,5 +142,14 @@ public class PlayerController : MonoBehaviour
         currentNode = targetNode;
         isMoving = false;
         Debug.Log($"移动完成，剩余点数: {actionPoints}");
+    }
+
+    // 处理理智归零的事件
+    private void HandleSanityZero()
+    {
+        // 可以在这里添加游戏结束的视觉或音效反馈
+        Debug.Log("玩家控制器收到理智归零通知，停止所有行动。");
+        // 例如，禁用玩家输入，显示游戏结束画面等
+        // this.enabled = false; // 禁用 PlayerController 脚本
     }
 }
