@@ -7,16 +7,34 @@ public abstract class Card
     public string description;
     public int cardArtworkid;
     public CardSeries series;
-    public bool isActive = false;
     public Sprite cardArtwork;
 
-    public Card(int id, string cardName, string description, int cardArtworkid, CardSeries series)
+    private CardOwner _owner;
+    public CardOwner owner
+    {
+        get => _owner;
+        set
+        {
+            if (_owner != value)
+            {
+                CardOwner oldOwner = _owner;
+                _owner = value;
+                OnOwnerChanged?.Invoke(this, oldOwner, value);
+                GameEvent.TriggerCardOwnershipChanged(this, oldOwner, value);
+            }
+        }
+    }
+
+    public System.Action<Card, CardOwner, CardOwner> OnOwnerChanged;
+
+    public Card(int id, string cardName, string description, int cardArtworkid, CardSeries series, CardOwner owner)
     {
         this.id = id;
         this.cardName = cardName;
         this.description = description;
         this.cardArtworkid = cardArtworkid;
         this.series = series;
+        this.owner = owner;
         LoadCardArtwork();
     }
 
@@ -33,31 +51,13 @@ public abstract class Card
 public class MonsterCard : Card
 {
     public int score;
-    private CardOwner _owner;
-
-    public CardOwner owner
-    {
-        get => _owner;
-        set
-        {
-            if (_owner != value)
-            {
-                CardOwner oldOwner = _owner;
-                _owner = value;
-                OnOwnerChanged?.Invoke(this, oldOwner, value);
-                GameEvent.TriggerCardOwnershipChanged(this, oldOwner, value);
-            }
-        }
-    }
-
-    public System.Action<MonsterCard, CardOwner, CardOwner> OnOwnerChanged;
+    public bool isActive = false; 
 
     public MonsterCard(int id, string cardName, string description,
         int cardArtworkid, int score, CardOwner owner, CardSeries series)
-        : base(id, cardName, description, cardArtworkid, series)
+        : base(id, cardName, description, cardArtworkid, series, owner)
     {
         this.score = score;
-        this.owner = owner;
     }
 }
 
@@ -65,8 +65,8 @@ public class MonsterCard : Card
 public class SpellCard : Card
 {
     public SpellCard(int id, string cardName, string description,
-        int cardArtworkid, CardSeries series)
-        : base(id, cardName, description, cardArtworkid, series)
+        int cardArtworkid, CardOwner owner, CardSeries series)
+        : base(id, cardName, description, cardArtworkid, series, owner)
     {
     }
 }

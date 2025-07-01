@@ -43,10 +43,10 @@ public class CardDisplay : MonoBehaviour
         if (cardData == null)
             return;
 
-        // 更新卡牌背景（根据所有权）
-        if (cardBackgroundSprite != null && cardData is MonsterCard monsterCard)
+        // 更新卡牌背景（所有卡牌都有归属权）
+        if (cardBackgroundSprite != null)
         {
-            cardBackgroundSprite.sprite = monsterCard.owner == CardOwner.PlayerA
+            cardBackgroundSprite.sprite = cardData.owner == CardOwner.PlayerA
                 ? playerABackground
                 : playerBBackground;
         }
@@ -79,32 +79,39 @@ public class CardDisplay : MonoBehaviour
             cardArtworkSprite.sprite = cardData.cardArtwork;
         }
 
-        // 如果卡牌激活，旋转180度（倒置）；否则，保持0度（正）
-        transform.rotation = cardData.isActive
-            ? Quaternion.Euler(0, 0, 180f)
-            : Quaternion.Euler(0, 0, 0f);
+        // 仅怪兽卡根据激活状态旋转
+        if (cardData is MonsterCard monsterCard)
+        {
+            transform.rotation = monsterCard.isActive
+                ? Quaternion.Euler(0, 0, 180f)
+                : Quaternion.Euler(0, 0, 0f);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, 0, 0f); // 非怪兽卡保持正常方向
+        }
     }
 
     // 注册卡牌事件监听
     private void RegisterCardEvents()
     {
-        if (cardData is MonsterCard monsterCard)
+        if (cardData != null)
         {
-            monsterCard.OnOwnerChanged += OnOwnerChanged;
+            cardData.OnOwnerChanged += OnOwnerChanged;
         }
     }
 
     // 取消注册卡牌事件监听
     private void UnregisterCardEvents()
     {
-        if (cardData is MonsterCard monsterCard)
+        if (cardData != null)
         {
-            monsterCard.OnOwnerChanged -= OnOwnerChanged;
+            cardData.OnOwnerChanged -= OnOwnerChanged;
         }
     }
 
     // 处理所有权变更事件
-    private void OnOwnerChanged(MonsterCard card, CardOwner oldOwner, CardOwner newOwner)
+    private void OnOwnerChanged(Card card, CardOwner oldOwner, CardOwner newOwner)
     {
         if (card == cardData)
         {
