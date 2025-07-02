@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour
 {
@@ -7,15 +8,15 @@ public class CardDisplay : MonoBehaviour
     public Card cardData;
 
     [Header("Visual Components")]
-    public SpriteRenderer cardBackgroundSprite; // 卡牌背景
-    public SpriteRenderer cardArtworkSprite;    // 卡牌艺术图
-    public TextMeshProUGUI cardNameText;        // 卡牌名称
-    public TextMeshProUGUI scoreText;           // 分数
-    public TextMeshProUGUI descriptionText;     // 描述
+    public Image cardBackgroundSprite; // 卡牌背景
+    public Image cardArtworkImage; // 卡牌艺术图
+    public TextMeshProUGUI cardNameText; // 卡牌名称
+    public TextMeshProUGUI scoreText; // 分数
+    public TextMeshProUGUI descriptionText; // 描述
 
     [Header("Ownership Backgrounds")]
-    public Sprite playerABackground; // 玩家A的卡牌背景
-    public Sprite playerBBackground; // 玩家B的卡牌背景
+    public Sprite playerABackground; // 玩家A的背景图
+    public Sprite playerBBackground; // 玩家B的背景图
 
     void Start()
     {
@@ -43,7 +44,7 @@ public class CardDisplay : MonoBehaviour
         if (cardData == null)
             return;
 
-        // 更新卡牌背景（所有卡牌都有归属权）
+        // 更新卡牌背景
         if (cardBackgroundSprite != null)
         {
             cardBackgroundSprite.sprite = cardData.owner == CardOwner.PlayerA
@@ -57,26 +58,27 @@ public class CardDisplay : MonoBehaviour
             cardNameText.text = cardData.cardName;
         }
 
-        // 更新分数（仅怪兽卡有分数）
+        // 更新分数
         if (scoreText != null && cardData is MonsterCard monster)
         {
             scoreText.text = monster.score.ToString();
         }
         else if (scoreText != null)
         {
-            scoreText.text = ""; // 非怪兽卡隐藏分数
+            scoreText.text = "";
         }
 
-        // 更新卡牌描述
+        // 更新卡牌描述（）
         if (descriptionText != null)
         {
             descriptionText.text = cardData.description;
         }
 
         // 更新卡牌艺术图
-        if (cardArtworkSprite != null)
+        if (cardArtworkImage != null)
         {
-            cardArtworkSprite.sprite = cardData.cardArtwork;
+            cardArtworkImage.sprite = cardData.cardArtwork; // Image通过sprite属性赋值
+            cardArtworkImage.enabled = cardData.cardArtwork != null; // 图片为空时隐藏
         }
 
         // 仅怪兽卡根据激活状态旋转
@@ -88,11 +90,11 @@ public class CardDisplay : MonoBehaviour
         }
         else
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0f); // 非怪兽卡保持正常方向
+            transform.rotation = Quaternion.Euler(0, 0, 0f);
         }
     }
 
-    // 注册卡牌事件监听
+    // 事件相关方法
     private void RegisterCardEvents()
     {
         if (cardData != null)
@@ -101,7 +103,6 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    // 取消注册卡牌事件监听
     private void UnregisterCardEvents()
     {
         if (cardData != null)
@@ -110,7 +111,6 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    // 处理所有权变更事件
     private void OnOwnerChanged(Card card, CardOwner oldOwner, CardOwner newOwner)
     {
         if (card == cardData)
