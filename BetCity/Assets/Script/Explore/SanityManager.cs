@@ -1,16 +1,17 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-// ÀíÖÇÖµ±ä»¯ÊÂ¼þ
+// ï¿½ï¿½ï¿½ï¿½Öµï¿½ä»¯ï¿½Â¼ï¿½
 [System.Serializable]
-public class SanityEvent : UnityEvent<int> { } // ²ÎÊýÎª±ä»¯µÄÀíÖÇÖµÁ¿
+public class SanityEvent : UnityEvent<int> { } // ï¿½ï¿½ï¿½ï¿½Îªï¿½ä»¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½
 
 public class SanityManager : MonoBehaviour
 {
-    // ¸Ä½øµÄµ¥ÀýÊµÏÖ
+    // ï¿½Ä½ï¿½ï¿½Äµï¿½ï¿½ï¿½Êµï¿½ï¿½
     private static SanityManager _instance;
     public static SanityManager Instance
     {
@@ -26,7 +27,7 @@ public class SanityManager : MonoBehaviour
                     _instance = singletonObject.AddComponent<SanityManager>();
                     singletonObject.name = typeof(SanityManager).ToString() + " (Singleton)";
 
-                    // È·±£µ¥ÀýÔÚ³¡¾°ÇÐ»»Ê±²»±»Ïú»Ù
+                    // È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú³ï¿½ï¿½ï¿½ï¿½Ð»ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     DontDestroyOnLoad(singletonObject);
                 }
             }
@@ -34,20 +35,20 @@ public class SanityManager : MonoBehaviour
         }
     }
 
-    [SerializeField] private int maxSanity = 100;    // ×î´óÀíÖÇÖµ
-    [SerializeField] private int currentSanity = 80; // ³õÊ¼ÀíÖÇÖµ
+    [SerializeField] private int maxSanity = 100;    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+    [SerializeField] private int currentSanity = 80; // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Öµ
 
     public int MaxSanity => maxSanity;
     public int CurrentSanity => currentSanity;
 
-    public SanityEvent onSanityIncreased; // ÀíÖÇÖµÔö¼ÓÊ±´¥·¢
-    public SanityEvent onSanityDecreased; // ÀíÖÇÖµ¼õÉÙÊ±´¥·¢
-    public UnityEvent onSanityChanged;    // ÀíÖÇÖµ±ä»¯Ê±´¥·¢ (²»´ø²ÎÊý)
-    public UnityEvent onSanityZero;       // ÀíÖÇÖµ¹éÁãÊ±´¥·¢
+    public SanityEvent onSanityIncreased; // ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
+    public SanityEvent onSanityDecreased; // ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
+    public UnityEvent onSanityChanged;    // ï¿½ï¿½ï¿½ï¿½Öµï¿½ä»¯Ê±ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
+    public UnityEvent onSanityZero;       // ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
 
     private void Awake()
     {
-        // È·±£³¡¾°ÖÐÖ»ÓÐÒ»¸öÊµÀý
+        // È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ò»ï¿½ï¿½Êµï¿½ï¿½
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -57,7 +58,7 @@ public class SanityManager : MonoBehaviour
         _instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // ³õÊ¼»¯ÊÂ¼þ
+        // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Â¼ï¿½
         if (onSanityIncreased == null)
             onSanityIncreased = new SanityEvent();
 
@@ -71,17 +72,17 @@ public class SanityManager : MonoBehaviour
             onSanityZero = new UnityEvent();
     }
 
-    // ÔÚÓ¦ÓÃ³ÌÐòÍË³öÊ±£¨°üÀ¨ÍË³ö²¥·ÅÄ£Ê½£©£¬ÇåÀí¾²Ì¬ÊµÀý
+    // ï¿½ï¿½Ó¦ï¿½Ã³ï¿½ï¿½ï¿½ï¿½Ë³ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¬Êµï¿½ï¿½
     private void OnApplicationQuit()
     {
-        _instance = null; // Çå¿Õ¾²Ì¬ÒýÓÃ
-        // Èç¹û SanityManager ÊÇÍ¨¹ý´úÂë´´½¨µÄ GameObject£¬
-        // ²¢ÇÒÃ»ÓÐ±» Destroy(gameObject) Ïú»Ù£¬
-        // ¿ÉÒÔÔÚÕâÀïÊÖ¶¯Ïú»ÙËü£¬µ«Í¨³£ Unity »á×Ô¶¯´¦Àí DontDestroyOnLoad µÄ¶ÔÏó¡£
-        // Èç¹ûÓÐ±ØÒª£¬¿ÉÒÔÌí¼Ó Debug.Log("SanityManager OnApplicationQuit called.");
+        _instance = null; // ï¿½ï¿½Õ¾ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ SanityManager ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ë´´ï¿½ï¿½ï¿½ï¿½ GameObjectï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð±ï¿½ Destroy(gameObject) ï¿½ï¿½ï¿½Ù£ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ Unity ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ DontDestroyOnLoad ï¿½Ä¶ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½Ð±ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Debug.Log("SanityManager OnApplicationQuit called.");
     }
 
-    // Ôö¼ÓÀíÖÇÖµ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
     public void IncreaseSanity(int amount)
     {
         if (amount <= 0) return;
@@ -93,11 +94,11 @@ public class SanityManager : MonoBehaviour
         {
             onSanityIncreased?.Invoke(amount);
             onSanityChanged?.Invoke();
-            Debug.Log($"ÀíÖÇÖµÔö¼Ó {amount}£¬µ±Ç°ÀíÖÇÖµ: {currentSanity}");
+            Debug.Log($"ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ {amount}ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Öµ: {currentSanity}");
         }
     }
 
-    // ¼õÉÙÀíÖÇÖµ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
     public void DecreaseSanity(int amount)
     {
         if (amount <= 0) return;
@@ -109,18 +110,18 @@ public class SanityManager : MonoBehaviour
         {
             onSanityDecreased?.Invoke(amount);
             onSanityChanged?.Invoke();
-            Debug.Log($"ÀíÖÇÖµ¼õÉÙ {amount}£¬µ±Ç°ÀíÖÇÖµ: {currentSanity}");
+            Debug.Log($"ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ {amount}ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Öµ: {currentSanity}");
 
             if (currentSanity <= 0)
             {
                 onSanityZero?.Invoke();
-                Debug.Log("ÀíÖÇÖµ¹éÁã£¬ÓÎÏ·½áÊø£¡");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ã£¬ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
                 // SceneManager.LoadScene("GameOverScene");
             }
         }
     }
 
-    // Ö±½ÓÉèÖÃÀíÖÇÖµ
+    // Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
     public void SetSanity(int newSanity)
     {
         int oldValue = currentSanity;
@@ -129,11 +130,11 @@ public class SanityManager : MonoBehaviour
         if (currentSanity != oldValue)
         {
             onSanityChanged?.Invoke();
-            Debug.Log($"ÀíÖÇÖµÉèÖÃÎª {newSanity}£¬µ±Ç°ÀíÖÇÖµ: {currentSanity}");
+            Debug.Log($"ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Îª {newSanity}ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Öµ: {currentSanity}");
             if (currentSanity <= 0)
             {
                 onSanityZero?.Invoke();
-                Debug.Log("ÀíÖÇÖµ¹éÁã£¬ÓÎÏ·½áÊø£¡");
+                Debug.Log("ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ã£¬ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             }
         }
     }

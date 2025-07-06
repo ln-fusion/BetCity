@@ -1,28 +1,29 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro; // <-- Ìí¼ÓÕâÒ»ÐÐ
+using TMPro; // <-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 
 public class SanityUIController : MonoBehaviour
 {
     [SerializeField] private Button increaseButton;
     [SerializeField] private Button decreaseButton;
     [SerializeField] private Slider sanitySlider;
-    [SerializeField] private TextMeshProUGUI sanityText; // <-- ÐÞ¸ÄÕâÒ»ÐÐ
-    [SerializeField] private int changeAmount = 10; // Ã¿´ÎÔö¼õµÄÁ¿
+    [SerializeField] private TextMeshProUGUI sanityText; // <-- ï¿½Þ¸ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+    [SerializeField] private int changeAmount = 10; // Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    // ±¾µØ»¯ÎÄ±¾¼ü£¨¿ÉÅäºÏLocalizationÏµÍ³Ê¹ÓÃ£©
-    [SerializeField] private string sanityTextFormat = "Sanity: {0} / {1}"; // »òÕß "HP: {0} / {1}" µÈ
+    // ï¿½ï¿½ï¿½Ø»ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½LocalizationÏµÍ³Ê¹ï¿½Ã£ï¿½
+    [SerializeField] private string sanityTextFormat = "Sanity: {0} / {1}"; // ï¿½ï¿½ï¿½ï¿½ "HP: {0} / {1}" ï¿½ï¿½
 
 
-    // È·±£UIÔÚ³¡¾°ÇÐ»»Ê±Î¨Ò»
+    // È·ï¿½ï¿½UIï¿½Ú³ï¿½ï¿½ï¿½ï¿½Ð»ï¿½Ê±Î¨Ò»
     private static bool instanceExists;
 
     private void Awake()
     {
-        // µ¥ÀýÄ£Ê½·ÀÖ¹¶à¸öUIÊµÀý
+        // ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½UIÊµï¿½ï¿½
         if (!instanceExists)
         {
             instanceExists = true;
@@ -34,55 +35,55 @@ public class SanityUIController : MonoBehaviour
             return;
         }
 
-        // ÑéÖ¤UI×é¼þÒýÓÃ
+        // ï¿½ï¿½Ö¤UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ValidateReferences();
     }
 
     private void Start()
     {
-        // È·±£ SanityManager ÒÑ¾­³õÊ¼»¯
-        SanityManager.Instance.ToString(); // ·ÃÎÊÒ»´Î Instance ÊôÐÔÒÔ´¥·¢Æä Awake/µ¥Àý´´½¨
+        // È·ï¿½ï¿½ SanityManager ï¿½Ñ¾ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+        SanityManager.Instance.ToString(); // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ Instance ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ Awake/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
         UpdateSanityUI();
         SetupButtonEvents();
         SetupEventListeners();
 
-        // ¼àÌý³¡¾°¼ÓÔØÊÂ¼þ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDestroy()
     {
-        // ÇåÀíÊÂ¼þ¼àÌý£¬·ÀÖ¹ÄÚ´æÐ¹Â©
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½Ú´ï¿½Ð¹Â©
         RemoveEventListeners();
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // ³¡¾°¼ÓÔØºó¸üÐÂUI
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½ï¿½UI
         UpdateSanityUI();
     }
 
     private void ValidateReferences()
     {
-        // ¼ì²éUI×é¼þÊÇ·ñÕýÈ·¸³Öµ
+        // ï¿½ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½È·ï¿½ï¿½Öµ
         if (increaseButton == null)
-            Debug.LogError("increaseButtonÎ´¸³Öµ£¡");
+            Debug.LogError("increaseButtonÎ´ï¿½ï¿½Öµï¿½ï¿½");
 
         if (decreaseButton == null)
-            Debug.LogError("decreaseButtonÎ´¸³Öµ£¡");
+            Debug.LogError("decreaseButtonÎ´ï¿½ï¿½Öµï¿½ï¿½");
 
         if (sanitySlider == null)
-            Debug.LogError("sanitySliderÎ´¸³Öµ£¡");
+            Debug.LogError("sanitySliderÎ´ï¿½ï¿½Öµï¿½ï¿½");
 
         if (sanityText == null)
-            Debug.LogError("sanityTextÎ´¸³Öµ£¡");
+            Debug.LogError("sanityTextÎ´ï¿½ï¿½Öµï¿½ï¿½");
     }
 
     private void SetupButtonEvents()
     {
-        // °´Å¥ÊÂ¼þ°ó¶¨
+        // ï¿½ï¿½Å¥ï¿½Â¼ï¿½ï¿½ï¿½
         if (increaseButton != null)
             increaseButton.onClick.AddListener(() => SanityManager.Instance.IncreaseSanity(changeAmount));
 
@@ -92,13 +93,13 @@ public class SanityUIController : MonoBehaviour
 
     private void SetupEventListeners()
     {
-        // ¼àÌý SanityManager µÄÀíÖÇÖµ±ä»¯ÊÂ¼þ
+        // ï¿½ï¿½ï¿½ï¿½ SanityManager ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ä»¯ï¿½Â¼ï¿½
         if (SanityManager.Instance != null)
         {
             SanityManager.Instance.onSanityChanged.AddListener(UpdateSanityUI);
-            // Èç¹ûÐèÒª£¬Ò²¿ÉÒÔ¼àÌý onSanityIncreased ºÍ onSanityDecreased
-            // SanityManager.Instance.onSanityIncreased.AddListener((amount) => Debug.Log($"UI ÊÕµ½ÀíÖÇÔö¼ÓÍ¨Öª: {amount}"));
-            // SanityManager.Instance.onSanityDecreased.AddListener((amount) => Debug.Log($"UI ÊÕµ½ÀíÖÇ¼õÉÙÍ¨Öª: {amount}"));
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ò²ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ onSanityIncreased ï¿½ï¿½ onSanityDecreased
+            // SanityManager.Instance.onSanityIncreased.AddListener((amount) => Debug.Log($"UI ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Öª: {amount}"));
+            // SanityManager.Instance.onSanityDecreased.AddListener((amount) => Debug.Log($"UI ï¿½Õµï¿½ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½Í¨Öª: {amount}"));
         }
     }
 
@@ -110,7 +111,7 @@ public class SanityUIController : MonoBehaviour
         }
     }
 
-    // ¸üÐÂUIÏÔÊ¾
+    // ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½Ê¾
     public void UpdateSanityUI()
     {
         if (SanityManager.Instance == null) return;
