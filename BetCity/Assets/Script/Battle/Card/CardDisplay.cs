@@ -94,7 +94,7 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    // 事件相关方法
+    // 事件相关方法 
     private void RegisterCardEvents()
     {
         if (cardData != null)
