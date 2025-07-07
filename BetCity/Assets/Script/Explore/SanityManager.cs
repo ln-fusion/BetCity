@@ -110,12 +110,12 @@ public class SanityManager : MonoBehaviour
         {
             onSanityDecreased?.Invoke(amount);
             onSanityChanged?.Invoke();
-            Debug.Log($"����ֵ���� {amount}����ǰ����ֵ: {currentSanity}");
+            Debug.Log($"剩余理智{amount}����ǰ����ֵ: {currentSanity}");
 
             if (currentSanity <= 0)
             {
                 onSanityZero?.Invoke();
-                Debug.Log("����ֵ���㣬��Ϸ������");
+                Debug.Log("理智为0，游戏结束");
                 // SceneManager.LoadScene("GameOverScene");
             }
         }

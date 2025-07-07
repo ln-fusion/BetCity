@@ -1,10 +1,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// Node.cs
+public enum NodeType
+{
+    Normal,      // 普通节点
+    RandomEvent, // 触发随机事件的节点
+    FixedEvent,  // 触发固定事件的节点
+    Battle       // 触发战斗的节点
+    // ... 其他可能的节点类型可以在这里添加
+}
+
+
+
 public class Node : MonoBehaviour
 {
+    [Header("节点类型")]
+    public NodeType nodeType = NodeType.Normal;
+
+    [Header("固定事件场景索引 (仅当 NodeType 为 FixedEvent 时有效)")]
+    public int fixedEventSceneIndex = -1; // 默认-1表示未设置
+
     [Header("节点连接")]
     public List<Node> connectedNodes = new List<Node>();
+
+
 
     private PlayerController playerController; // 添加对 PlayerController 的引用
 

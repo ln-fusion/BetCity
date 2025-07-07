@@ -11,4 +11,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainCityEvent1.unity
     guid: 3b113079b17e10d4fb5c880a245d94c3
+  - enabled: 1
+    path: Assets/Scenes/BattleScene.unity
+    guid: 1cdabefc36e31cb4296d2d6f412c1d69
+  - enabled: 1
+    path: Assets/Scenes/Event1.unity
+    guid: 9da3199fa786ae74594991700db776de
+  - enabled: 1
+    path: Assets/Scenes/Event2.unity
+    guid: 906194d49a085134d83c3f1a523d30fb
+  - enabled: 1
+    path: Assets/Scenes/Event3.unity
+    guid: a455cd528c94efc49bf92b07ce0e940b
   m_configObjects: {}
