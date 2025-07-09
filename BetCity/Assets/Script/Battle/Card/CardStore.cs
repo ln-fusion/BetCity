@@ -37,7 +37,8 @@ public class CardStore : MonoBehaviour
                 CardSeries series = ParseCardSeries(rowArray[6]);
                 MonsterCard monsterCard = new MonsterCard(id,cardName,description,cardArtworkid,score,CardOwner.PlayerA,series) ;
                 cardList.Add(monsterCard);
-                Debug.Log(monsterCard.cardName);
+                Debug.Log(monsterCard.series);
+
             }
             else if (rowArray[0]=="spell")
             //魔法卡
@@ -67,5 +68,11 @@ public class CardStore : MonoBehaviour
 
         Debug.LogWarning($"无法解析CardSeries: {seriesString}，使用默认值None");
         return CardSeries.None;
+    }
+
+    public Card RandomCard()
+    {
+        Card card = cardList[Random.Range(0, cardList.Count)];
+        return card;
     }
 }

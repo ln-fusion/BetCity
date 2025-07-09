@@ -35,6 +35,7 @@ public class DeckManager : MonoBehaviour
             {
                 GameObject newCard  =Instantiate(cardPrefab,libraryPanel);
                 newCard.GetComponent<CardCounter>().counter.text = PlayerData.playerCard[i].ToString();
+                newCard.GetComponent<CardDisplay>().card = CardStore.cardList[i];
             }
         }
         

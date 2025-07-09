@@ -1,8 +1,7 @@
 #,编号,卡名,描述,图片编号,分数,系列
-monster,0,zqz1,我是逆蝶，啊啊啊,0,1,Burn
-monster,1,zqz2,我才是逆蝶,1,1,Burn
-monster,4,zqz3,我是乃龙，啊啊啊111,4,2,Burn
-,,,,,,
+monster,0,zqz1,111,0,1,Burn
+monster,1,zqz2,222,1,1,Burn
+monster,4,zqz3,333,4,2,Burn
 #,编号,卡名,描述,图片编号,系列,
-spell,2,ldt1,我是乃龙，啊啊啊,2,Burn,
-spell,3,ldt2,我才是乃龙,3,Burn,
+spell,2,ldt1,111,2,Burn,
+spell,3,ldt2,222,3,Burn,

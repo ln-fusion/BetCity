@@ -41,8 +41,7 @@ public abstract class Card
     // 加载卡图的方法
     public void LoadCardArtwork()
     {
-        // 从Resources目录加载图片
-        string path = $"/Image/CardImage";
+        string path = $"Image/CardImage/{cardArtworkid}";
         cardArtwork = Resources.Load<Sprite>(path);
     }
 }
