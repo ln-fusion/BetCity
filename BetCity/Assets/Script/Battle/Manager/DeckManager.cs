@@ -8,6 +8,7 @@ public class DeckManager : MonoBehaviour
     public Transform libraryPanel;
 
     public GameObject cardPrefab;
+    public GameObject deckPrefab;
 
     public GameObject DataManager;
 
@@ -19,6 +20,7 @@ public class DeckManager : MonoBehaviour
         PlayerData = DataManager.GetComponent<PlayerData>();
         CardStore = DataManager.GetComponent<CardStore>();
         UpdateLibrary();
+        UpdateDeck();
     }
 
     // Update is called once per frame
@@ -39,5 +41,18 @@ public class DeckManager : MonoBehaviour
             }
         }
         
+    }
+    public void UpdateDeck()
+    {
+        for (int i = 0; i < PlayerData.playerDeck.Length; i++)
+        {
+            if (PlayerData.playerDeck[i] > 0)
+            {
+                GameObject newCard = Instantiate(deckPrefab, deckPanel);
+                newCard.GetComponent<CardCounter>().counter.text = PlayerData.playerDeck[i].ToString();
+                newCard.GetComponent<CardDisplay>().card = CardStore.cardList[i];
+            }
+        }
+
     }
 }

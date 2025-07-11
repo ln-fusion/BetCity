@@ -8,6 +8,7 @@ public class PlayerData : MonoBehaviour
     public CardStore CardStore;
 
     public int[] playerCard;
+    public int[] playerDeck;
 
     public TextAsset playerData;
 
@@ -28,6 +29,7 @@ public class PlayerData : MonoBehaviour
     public void LoadPlayerData()
     {
         playerCard = new int[CardStore.cardList.Count];
+        playerDeck = new int[CardStore.cardList.Count];
         string[] dataRow = playerData.text.Split('\n');
         foreach (var row in dataRow)
         {
@@ -36,12 +38,17 @@ public class PlayerData : MonoBehaviour
             {
                 continue;
             }
-            else if (rowArray[0]=="card")
+            else if (rowArray[0] == "card")
             {
                 int id = int.Parse(rowArray[1]);
                 int num = int.Parse(rowArray[2]);
                 playerCard[id] = num;
-
+            }
+            else if (rowArray[0] == "deck")
+            {
+                int id = int.Parse(rowArray[1]);
+                int num = int.Parse(rowArray[2]);
+                playerDeck[id] = num;
             }
         }
     }
@@ -58,8 +65,17 @@ public class PlayerData : MonoBehaviour
             }
 
         }
+        //保存卡组
+        for (int i = 0; i < playerDeck.Length; i++)
+        {
+            if (playerDeck[i] != 0)
+            {
+                datas.Add("deck," + i.ToString() + "," + playerDeck[i].ToString());
+            }
+
+        }
         //保存
         File.WriteAllLines(path, datas);
-        Debug.Log(datas);
+        //Debug.Log(datas);
     }
 }

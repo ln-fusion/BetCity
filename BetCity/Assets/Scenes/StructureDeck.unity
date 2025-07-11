@@ -154,6 +154,7 @@ MonoBehaviour:
   deckPanel: {fileID: 1515504742}
   libraryPanel: {fileID: 1656173769}
   cardPrefab: {fileID: 1137214183073053176, guid: ddbcdf5b1da808c4d9670eb94279b682, type: 3}
+  deckPrefab: {fileID: 1137214183073053176, guid: ddbcdf5b1da808c4d9670eb94279b682, type: 3}
   DataManager: {fileID: 844981149}
 --- !u!4 &70115060
 Transform:
