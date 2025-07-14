@@ -7,6 +7,9 @@ public class DeckManager : MonoBehaviour
     public Transform deckPanel;
     public Transform libraryPanel;
 
+    private Dictionary<int, GameObject> libraryDic = new Dictionary<int, GameObject>();
+    private Dictionary<int, GameObject> deckDic = new Dictionary<int, GameObject>();
+
     public GameObject cardPrefab;
     public GameObject deckPrefab;
 
@@ -14,6 +17,7 @@ public class DeckManager : MonoBehaviour
 
     private PlayerData PlayerData;
     private CardStore CardStore;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,33 +30,105 @@ public class DeckManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void UpdateLibrary()
     {
-        for(int i=0;i<PlayerData.playerCard.Length;i++)
+        for (int i = 0; i < PlayerData.playerCard.Length; i++)
         {
-            if(PlayerData.playerCard[i]>0)
+            if (PlayerData.playerCard[i] > 0)
             {
-                GameObject newCard  =Instantiate(cardPrefab,libraryPanel);
-                newCard.GetComponent<CardCounter>().counter.text = PlayerData.playerCard[i].ToString();
-                newCard.GetComponent<CardDisplay>().card = CardStore.cardList[i];
+                CreatCard(i, CardState.Library);
             }
         }
-        
     }
+
     public void UpdateDeck()
     {
         for (int i = 0; i < PlayerData.playerDeck.Length; i++)
         {
             if (PlayerData.playerDeck[i] > 0)
             {
-                GameObject newCard = Instantiate(deckPrefab, deckPanel);
-                newCard.GetComponent<CardCounter>().counter.text = PlayerData.playerDeck[i].ToString();
-                newCard.GetComponent<CardDisplay>().card = CardStore.cardList[i];
+                CreatCard(i, CardState.Deck);
             }
         }
+    }
 
+    public void UpdateCard(CardState _state, int _id)
+{
+    if (_state == CardState.Deck)
+    {
+        if (deckDic.ContainsKey(_id))
+        {
+            PlayerData.playerCard[_id]++;
+            PlayerData.playerDeck[_id]--;
+
+            // 减少卡组中的卡牌数量
+            if (!deckDic[_id].GetComponent<CardCounter>().SetCounter(-1))
+            {
+                deckDic.Remove(_id);
+            }
+
+            // 增加图书馆中的卡牌数量
+            if (libraryDic.ContainsKey(_id))
+            {
+                libraryDic[_id].GetComponent<CardCounter>().SetCounter(1);
+            }
+            else
+            {
+                // 如果图书馆中没有这张卡，创建它
+                CreatCard(_id, CardState.Library);
+            }
+        }
+    }
+    else if (_state == CardState.Library)
+    {
+        if (libraryDic.ContainsKey(_id))
+        {
+            PlayerData.playerCard[_id]--;
+            PlayerData.playerDeck[_id]++;
+
+            // 增加卡组中的卡牌数量
+            if (deckDic.ContainsKey(_id))
+            {
+                deckDic[_id].GetComponent<CardCounter>().SetCounter(1);
+            }
+            else
+            {
+                // 如果卡组中没有这张卡，创建它
+                CreatCard(_id, CardState.Deck);
+            }
+
+            // 减少图书馆中的卡牌数量
+            if (!libraryDic[_id].GetComponent<CardCounter>().SetCounter(-1))
+            {
+                libraryDic.Remove(_id);
+            }
+        }
+    }
+}
+    public void CreatCard(int _id, CardState _state)
+    {
+        Transform targetPanel;
+        GameObject targetPrefab;
+        var refData = PlayerData.playerCard;
+        Dictionary<int, GameObject> targetDic = libraryDic;
+        if (_state == CardState.Library)
+        {
+            targetPanel = libraryPanel;
+            targetPrefab = cardPrefab;
+        }
+        else
+        {
+            targetPanel = deckPanel;
+            targetPrefab = deckPrefab;
+            refData = PlayerData.playerDeck;
+            targetDic = deckDic;
+        }
+        GameObject newCard = Instantiate(targetPrefab, targetPanel);
+        newCard.GetComponent<CardCounter>().SetCounter(refData[_id]);
+        newCard.GetComponent<CardDisplay>().card = CardStore.cardList[_id];
+        targetDic.Add(_id, newCard);
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2046790551316125284}
   - component: {fileID: 3724060610691451457}
   - component: {fileID: 7042667657258533688}
+  - component: {fileID: -2003485400883653979}
   m_Layer: 5
   m_Name: LibraryCard
   m_TagString: Untagged
@@ -76,7 +77,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f99981280293f7a4a9c5b0ea195c377b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  counter: {fileID: 2693277015493567801}
+  counterText: {fileID: 2693277015493567801}
 --- !u!114 &7042667657258533688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,6 +92,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   highlightColor: {r: 1, g: 1, b: 0.8, a: 1}
   cardImage: {fileID: 8896981615457144236}
+--- !u!114 &-2003485400883653979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137214183073053176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03452b89866d8e94e829944c1422c55b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
 --- !u!1 &5513774234291855148
 GameObject:
   m_ObjectHideFlags: 0
