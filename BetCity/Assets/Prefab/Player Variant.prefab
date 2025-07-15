@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2216923991530460025
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.375
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.625
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -7.3899994
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5736604847405801924, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7902686705031400071, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      propertyPath: m_Name
+      value: Player Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7902686705031400071, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2717778683743217728}
+  m_SourcePrefab: {fileID: 100100000, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+--- !u!1 &8318116831029074430 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7902686705031400071, guid: 7558336b09be4c242b485114bbd052c5, type: 3}
+  m_PrefabInstance: {fileID: 2216923991530460025}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2717778683743217728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8318116831029074430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8355820e6a28fe247911bf14c0a249ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diceManager: {fileID: 0}
+  startNode: {fileID: 0}
+  mySceneLoader: {fileID: 0}
+  moveSpeed: 0.5
+  playerHeight: 0.5
+  dailySanityCost: 5
+  eventSceneIndices: 020000000300000004000000

@@ -1,38 +1,44 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement; // 确保引入 SceneManagement
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
-    // ========== 公开字段 ==========
     [Header("组件引用")]
-    [SerializeField] private DiceManager diceManager;
-    [SerializeField] private Node startNode;
+    [SerializeField] private DiceManager diceManager; // 投骰子管理器
+    [SerializeField] private Node startNode; // 玩家起始节点
+    [SerializeField] private MySceneLoader mySceneLoader; // 新增：引用自定义的场景加载器
 
     [Header("移动设置")]
-    [SerializeField] private float moveSpeed = 0.5f;
-    [SerializeField] private float playerHeight = 0.5f;
+    [SerializeField] private float moveSpeed = 0.5f; // 移动速度
+    [SerializeField] private float playerHeight = 0.5f; // 玩家高度
 
     [Header("理智消耗设置")]
-    [SerializeField] private int dailySanityCost = 5; // 每天消耗的理智值
+    [SerializeField] private int dailySanityCost = 5; // 每次行动消耗的理智值
 
-    [Header("场景索引")]
-    [SerializeField] private int battleSceneIndex = 2; // 战斗场景索引，根据截图应为 2
-    [SerializeField] private int gameOverSceneIndex = 5; // 游戏结束场景索引 (假设您会有一个游戏结束场景，这里暂时用 Event3 的索引作为示例，您需要替换为实际的游戏结束场景索引)
-    // 假设您的事件场景索引是 1, 3, 4, 5 (MainCityEvent1, Event1, Event2, Event3)
-    [SerializeField] private int[] eventSceneIndices = {2, 3, 4, 5 }; // 对应 Battle, Event1, Event2, Event3
+    [Header("事件场景索引")]
+    [SerializeField] private int[] eventSceneIndices = { 2, 3, 4, 5 }; // 事件场景的索引
 
+    private Node currentNode; // 当前所在节点
+    private int actionPoints; // 剩余行动点数
+    private bool isMoving; // 是否正在移动
+    private bool isInEvent = false; // 标记是否在事件场景中
 
+    private Vector3 savedCameraPosition; // 用于保存摄像机的初始位置
 
-    // ========== 私有变量 ==========
-    private Node currentNode;
-    private int actionPoints;
-    private bool isMoving;
-    private bool isInEvent = false; // 新增：标记是否在事件场景中
-
-    // ========== 初始化 ==========
+    // 初始化
     private void Start()
     {
+        // 保存摄像机的位置
+        if (Camera.main != null)
+        {
+            savedCameraPosition = Camera.main.transform.position;
+        }
+        else
+        {
+            Debug.LogError("未找到 MainCamera，请确保场景中有一个标记为 MainCamera 的摄像机！");
+        }
+
         if (startNode != null)
         {
             InitAtNode(startNode);
@@ -43,42 +49,156 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("未指定起始节点！");
         }
 
-        SanityManager.Instance.ToString();
-        SanityManager.Instance.onSanityZero.AddListener(HandleSanityZero);
-
-        // 监听场景卸载事件，以便在事件场景卸载后重新启用玩家控制
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
-    }
-
-    private void OnDestroy()
-    {
+        // 确保 SanityManager 实例化并添加监听器
         if (SanityManager.Instance != null)
         {
-            SanityManager.Instance.onSanityZero.RemoveListener(HandleSanityZero);
+            SanityManager.Instance.onSanityZero.AddListener(HandleSanityZero); // 监听理智值归零事件
         }
-        SceneManager.sceneUnloaded -= OnSceneUnloaded;
-    }
-
-    // 当场景卸载时调用
-    private void OnSceneUnloaded(Scene scene)
-    {
-        // 检查卸载的场景是否是我们的事件场景之一
-        foreach (int index in eventSceneIndices)
+        else
         {
-            if (scene.buildIndex == index || scene.buildIndex == battleSceneIndex)
+            Debug.LogError("SanityManager 实例未初始化！");
+        }
+
+        // 确保 MySceneLoader 实例已赋值
+        if (mySceneLoader == null)
+        {
+            // 尝试在场景中查找 MySceneLoader 实例
+            mySceneLoader = FindObjectOfType<MySceneLoader>();
+            if (mySceneLoader == null)
             {
-                Debug.Log($"事件/战斗场景 {scene.name} 已卸载，重新启用玩家控制。");
-                isInEvent = false;
-                EnablePlayerControl(true); // 重新启用玩家控制
-                break;
+                Debug.LogError("未找到 MySceneLoader 组件！请确保场景中有一个挂载了 MySceneLoader 脚本的 GameObject。");
             }
         }
     }
 
-    // ========== 公共方法 ==========
+
+
+
+
+
+    // 保存玩家状态
+    private void SaveState()
+    {
+        GameState.currentPlayerState = new PlayerState(
+            SanityManager.Instance.CurrentSanity,
+            transform.position,
+            actionPoints
+        );
+        Debug.Log("玩家状态已保存");
+    }
+
+    // 切换到事件场景
+    public void LoadEventScene(int sceneIndex)
+    {
+        SaveState(); // 保存当前状态
+
+        // 获取场景名称（字符串）
+        string sceneName = GetSceneNameByIndex(sceneIndex);
+
+        // 加载事件场景
+        if (mySceneLoader != null)
+        {
+            mySceneLoader.LoadScene(sceneName); // 使用自定义的场景加载器
+        }
+        else
+        {
+            Debug.LogError("MySceneLoader 未引用，无法加载场景！");
+            // 备用方案：直接使用 Unity 内置的 SceneManager，但可能不是期望的行为
+            // UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+        }
+        isInEvent = true; // 设置为在事件场景中
+
+        // 恢复摄像机的位置
+        if (Camera.main != null)
+        {
+            Camera.main.transform.position = savedCameraPosition;
+        }
+        else
+        {
+            Debug.LogError("没有找到 MainCamera，无法恢复摄像机位置！");
+        }
+    }
+
+    // 离开事件，返回探索场景
+    public void EndEvent()
+    {
+        // 加载主探索场景
+        if (mySceneLoader != null)
+        {
+            mySceneLoader.LoadScene("ExplorerMap"); // 使用自定义的场景加载器
+        }
+        else
+        {
+            Debug.LogError("MySceneLoader 未引用，无法加载场景！");
+            // 备用方案：直接使用 Unity 内置的 SceneManager，但可能不是期望的行为
+            // UnityEngine.SceneManagement.SceneManager.LoadScene("ExplorerMap");
+        }
+        isInEvent = false; // 设置为不在事件场景中
+        RestoreState(); // 恢复玩家状态
+    }
+
+    // 恢复玩家状态
+    private void RestoreState()
+    {
+        if (GameState.currentPlayerState != null)
+        {
+            transform.position = GameState.currentPlayerState.position;
+            SanityManager.Instance.SetSanity(GameState.currentPlayerState.sanity); // 恢复理智值
+            actionPoints = GameState.currentPlayerState.actionPoints; // 恢复行动点数
+            Debug.Log("玩家状态已恢复");
+        }
+    }
+
+    // 获取场景名称
+    private string GetSceneNameByIndex(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return "Scenes/ExplorerMap"; // 探索地图
+            case 1:
+                return "Scenes/MainCityEvent1"; // 事件场景 1
+            case 2:
+                return "Scenes/BattleScene"; // 战斗场景
+            case 3:
+                return "Scenes/Event1"; // 事件场景 1
+            case 4:
+                return "Scenes/Event2"; // 事件场景 2
+            case 5:
+                return "Scenes/Event3"; // 事件场景 3
+            default:
+                return "Scenes/ExplorerMap"; // 默认返回探索场景
+        }
+    }
+
+
+    // 触发随机事件
+    private void TriggerRandomEvent()
+    {
+        int randomIndex = Random.Range(0, eventSceneIndices.Length);
+        int sceneToLoad = eventSceneIndices[randomIndex];
+        LoadEventScene(sceneToLoad);
+    }
+
+    // 触发战斗
+    private void TriggerBattle()
+    {
+        int sceneToLoad = eventSceneIndices[0]; // 假设战斗场景在事件场景索引中
+        LoadEventScene(sceneToLoad);
+    }
+
+    // 处理理智归零的事件
+    private void HandleSanityZero()
+    {
+        Debug.Log("玩家理智归零，游戏结束。");
+        // 这里直接使用 Unity 内置的 SceneManager，确保在任何情况下都能加载游戏结束场景
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameOverScene"); // 加载游戏结束场景
+    }
+
+    // 公共方法：投骰子按钮
     public void RollDiceButton()
     {
-        if (isInEvent) // 如果在事件中，不允许投骰子
+        if (isInEvent)
         {
             Debug.LogWarning("当前正在事件中，无法投掷骰子。");
             return;
@@ -108,9 +228,10 @@ public class PlayerController : MonoBehaviour
         Debug.Log($"获得行动点数: {actionPoints}");
     }
 
+    // 公共方法：尝试移动到目标节点
     public void TryMoveToNode(Node targetNode)
     {
-        if (isInEvent) // 如果在事件中，不允许移动
+        if (isInEvent)
         {
             Debug.LogWarning("当前正在事件中，无法移动。");
             return;
@@ -128,13 +249,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // ========== 私有方法 ==========
+    // 私有方法：初始化节点位置
     private void InitAtNode(Node node)
     {
         currentNode = node;
         transform.position = node.transform.position + Vector3.up * playerHeight;
     }
 
+    // 私有方法：检查是否可以移动到目标节点
     private bool CanMoveTo(Node targetNode)
     {
         if (isMoving)
@@ -158,6 +280,7 @@ public class PlayerController : MonoBehaviour
         return true;
     }
 
+    // 私有方法：执行移动到目标节点
     private IEnumerator MoveToNode(Node targetNode)
     {
         isMoving = true;
@@ -185,10 +308,7 @@ public class PlayerController : MonoBehaviour
     // 启用或禁用玩家控制
     private void EnablePlayerControl(bool enable)
     {
-        // 禁用或启用 PlayerController 脚本本身
         this.enabled = enable;
-        // 如果有其他输入管理脚本，也需要在这里禁用/启用
-        // 例如：GetComponent<PlayerInput>().enabled = enable;
         Debug.Log($"玩家控制已 {(enable ? "启用" : "禁用")}");
     }
 
@@ -204,7 +324,7 @@ public class PlayerController : MonoBehaviour
                 if (node.fixedEventSceneIndex != -1)
                 {
                     Debug.Log($"触发固定事件，加载场景索引: {node.fixedEventSceneIndex}");
-                    LoadAdditiveScene(node.fixedEventSceneIndex);
+                    LoadEventScene(node.fixedEventSceneIndex);
                 }
                 else
                 {
@@ -221,44 +341,5 @@ public class PlayerController : MonoBehaviour
                 Debug.LogWarning($"未处理的节点类型: {node.nodeType}");
                 break;
         }
-    }
-    // 触发随机事件
-    private void TriggerRandomEvent()
-    {
-        if (eventSceneIndices.Length == 0)
-        {
-            Debug.LogWarning("未配置事件场景索引！");
-            return;
-        }
-
-        int randomIndex = Random.Range(0, eventSceneIndices.Length);
-        int sceneToLoad = eventSceneIndices[randomIndex];
-
-        Debug.Log($"触发随机事件，加载场景索引: {sceneToLoad}");
-        LoadAdditiveScene(sceneToLoad);
-    }
-
-    // 触发战斗
-    private void TriggerBattle()
-    {
-        Debug.Log($"触发战斗，加载场景索引: {battleSceneIndex}");
-        LoadAdditiveScene(battleSceneIndex);
-    }
-
-    // 加载叠加场景
-    private void LoadAdditiveScene(int sceneIndex)
-    {
-        isInEvent = true;
-        EnablePlayerControl(false); // 禁用玩家控制
-        SceneManager.LoadScene(sceneIndex, LoadSceneMode.Additive);
-    }
-
-    // 处理理智归零的事件
-    private void HandleSanityZero()
-    {
-        Debug.Log("玩家控制器收到理智归零通知，游戏结束。");
-        EnablePlayerControl(false); // 禁用玩家控制
-        // 加载游戏结束场景，这里使用 LoadScene 而不是 Additive，因为游戏已经结束
-        SceneManager.LoadScene(gameOverSceneIndex);
     }
 }

@@ -1,17 +1,11 @@
-
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
-// ����ֵ�仯�¼�
 [System.Serializable]
-public class SanityEvent : UnityEvent<int> { } // ����Ϊ�仯������ֵ��
+public class SanityEvent : UnityEvent<int> { }
 
 public class SanityManager : MonoBehaviour
 {
-    // �Ľ��ĵ���ʵ��
     private static SanityManager _instance;
     public static SanityManager Instance
     {
@@ -26,29 +20,27 @@ public class SanityManager : MonoBehaviour
                     GameObject singletonObject = new GameObject();
                     _instance = singletonObject.AddComponent<SanityManager>();
                     singletonObject.name = typeof(SanityManager).ToString() + " (Singleton)";
-
-                    // ȷ�������ڳ����л�ʱ��������
-                    DontDestroyOnLoad(singletonObject);
                 }
             }
             return _instance;
         }
     }
 
-    [SerializeField] private int maxSanity = 100;    // �������ֵ
-    [SerializeField] private int currentSanity = 80; // ��ʼ����ֵ
+    [SerializeField] private int maxSanity = 100;
+    [SerializeField] private int currentSanity = 80;
 
     public int MaxSanity => maxSanity;
     public int CurrentSanity => currentSanity;
 
-    public SanityEvent onSanityIncreased; // ����ֵ����ʱ����
-    public SanityEvent onSanityDecreased; // ����ֵ����ʱ����
-    public UnityEvent onSanityChanged;    // ����ֵ�仯ʱ���� (��������)
-    public UnityEvent onSanityZero;       // ����ֵ����ʱ����
+    // 定义事件
+    public SanityEvent onSanityIncreased;
+    public SanityEvent onSanityDecreased;
+    public UnityEvent onSanityChanged;
+    public UnityEvent onSanityZero;
 
     private void Awake()
     {
-        // ȷ��������ֻ��һ��ʵ��
+        // 确保只有一个实例存在
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -56,33 +48,8 @@ public class SanityManager : MonoBehaviour
         }
 
         _instance = this;
-        DontDestroyOnLoad(gameObject);
-
-        // ��ʼ���¼�
-        if (onSanityIncreased == null)
-            onSanityIncreased = new SanityEvent();
-
-        if (onSanityDecreased == null)
-            onSanityDecreased = new SanityEvent();
-
-        if (onSanityChanged == null)
-            onSanityChanged = new UnityEvent();
-
-        if (onSanityZero == null)
-            onSanityZero = new UnityEvent();
     }
 
-    // ��Ӧ�ó����˳�ʱ�������˳�����ģʽ����������̬ʵ��
-    private void OnApplicationQuit()
-    {
-        _instance = null; // ��վ�̬����
-        // ��� SanityManager ��ͨ�����봴���� GameObject��
-        // ����û�б� Destroy(gameObject) ���٣�
-        // �����������ֶ�����������ͨ�� Unity ���Զ����� DontDestroyOnLoad �Ķ���
-        // ����б�Ҫ���������� Debug.Log("SanityManager OnApplicationQuit called.");
-    }
-
-    // ��������ֵ
     public void IncreaseSanity(int amount)
     {
         if (amount <= 0) return;
@@ -93,12 +60,10 @@ public class SanityManager : MonoBehaviour
         if (currentSanity != oldValue)
         {
             onSanityIncreased?.Invoke(amount);
-            onSanityChanged?.Invoke();
-            Debug.Log($"����ֵ���� {amount}����ǰ����ֵ: {currentSanity}");
+            onSanityChanged?.Invoke(); // 触发理智变化事件
         }
     }
 
-    // ��������ֵ
     public void DecreaseSanity(int amount)
     {
         if (amount <= 0) return;
@@ -109,19 +74,14 @@ public class SanityManager : MonoBehaviour
         if (currentSanity != oldValue)
         {
             onSanityDecreased?.Invoke(amount);
-            onSanityChanged?.Invoke();
-            Debug.Log($"剩余理智{amount}����ǰ����ֵ: {currentSanity}");
-
+            onSanityChanged?.Invoke(); // 触发理智变化事件
             if (currentSanity <= 0)
             {
                 onSanityZero?.Invoke();
-                Debug.Log("理智为0，游戏结束");
-                // SceneManager.LoadScene("GameOverScene");
             }
         }
     }
 
-    // ֱ����������ֵ
     public void SetSanity(int newSanity)
     {
         int oldValue = currentSanity;
@@ -129,12 +89,10 @@ public class SanityManager : MonoBehaviour
 
         if (currentSanity != oldValue)
         {
-            onSanityChanged?.Invoke();
-            Debug.Log($"����ֵ����Ϊ {newSanity}����ǰ����ֵ: {currentSanity}");
+            onSanityChanged?.Invoke(); // 触发理智变化事件
             if (currentSanity <= 0)
             {
                 onSanityZero?.Invoke();
-                Debug.Log("����ֵ���㣬��Ϸ������");
             }
         }
     }
