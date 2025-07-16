@@ -76,6 +76,6 @@ public class PlayerData : MonoBehaviour
         }
         //保存
         File.WriteAllLines(path, datas);
-        Debug.Log("保存成功");
+        //Debug.Log(datas);
     }
 }
