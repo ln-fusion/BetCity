@@ -34,7 +34,6 @@ public class DeckManager : MonoBehaviour
         }
         return total >= 25;
     }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -104,16 +103,16 @@ public class DeckManager : MonoBehaviour
         if (libraryDic.ContainsKey(_id))
         {
             if (IsSingleCardOverLimit(_id))
-             {
+            {
                     Debug.LogWarning("单张卡牌数量不能超过4张");
                     return;
-             }
+            }
 
-             if (IsTotalCardsOverLimit())
-                {
+            if (IsTotalCardsOverLimit())
+            {
                     Debug.LogWarning("卡组总数量不能超过25张");
                     return;
-                }
+            }
             PlayerData.playerCard[_id]--;
             PlayerData.playerDeck[_id]++;
 
