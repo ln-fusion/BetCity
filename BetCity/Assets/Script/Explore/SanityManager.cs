@@ -27,8 +27,8 @@ public class SanityManager : MonoBehaviour
         // 设置CSV文件路径
         // 获取项目Assets文件夹的路径
         string assetsPath = Application.dataPath;
-        // 组合成Assets/Data/Assets/Data/playerdata.csv路径
-        csvFilePath = Path.Combine(assetsPath, "Data", "playerdata.csv");
+        // 组合成Assets/Data/Assets/Data/playernature.csv路径
+        csvFilePath = Path.Combine(assetsPath, "Data", "playenature.csv");
 
         // 初始化事件
         if (onSanityIncreased == null)
